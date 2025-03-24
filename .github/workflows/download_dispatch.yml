@@ -46,7 +46,7 @@ jobs:
 
       - name: 运行下载脚本
         if: steps.check_file.outputs.skip != 'true'
-        run: jmcomic ${{ env.JM_ALBUM_ID }} --option="./option.yml"
+        run: jmcomic p${{ env.JM_ALBUM_ID }} --option="./option.yml"
 
       - name: 下载依赖
         if: steps.check_file.outputs.skip != 'true'
