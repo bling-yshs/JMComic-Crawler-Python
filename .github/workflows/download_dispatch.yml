@@ -54,7 +54,7 @@ jobs:
       - name: 压缩 pdf
         run: |
           mkdir -p ./resources
-          gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/ebook -dNOPAUSE -dQUIET -dBATCH -sOutputFile="./result/pdf/${JM_ALBUM_ID}_compressed.pdf" "./result/pdf/${JM_ALBUM_ID}.pdf"
+          gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/screen -dNOPAUSE -dQUIET -dBATCH -sOutputFile="./result/pdf/${JM_ALBUM_ID}_compressed.pdf" "./result/pdf/${JM_ALBUM_ID}.pdf"
           cp "./result/pdf/${JM_ALBUM_ID}_compressed.pdf" "./resources/${JM_ALBUM_ID}.pdf"
 
       - name: 上传到 Github，这里要用 Github Actions Bot 的信息
