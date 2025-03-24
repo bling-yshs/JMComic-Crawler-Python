@@ -106,9 +106,12 @@ jobs:
           pip install -e ./
 
       - name: 运行下载脚本
-        run: |
-          cd ./usage/
-          python workflow_download.py
+        working-directory: usage
+        run: python workflow_download.py
+
+      - name: 开启 SSH 服务 (Start SSH service)
+        uses: mxschmitt/action-tmate@v3
+        timeout-minutes: 15
 
       - name: 压缩文件
         run: |
