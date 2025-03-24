@@ -14,7 +14,7 @@ on:
         required: true
 
 jobs:
-  crawler:
+  download:
     runs-on: ubuntu-latest
     env:
       # 工作流输入
@@ -30,11 +30,9 @@ jobs:
 
       - name: Install Dependency
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements-dev.txt
+          pip install img2pdf
 
       - name: 安装jmcomic（pip）
-        if: ${{ github.ref != 'refs/heads/dev' }}
         run: |
           pip install jmcomic -i https://pypi.org/project --upgrade
 
@@ -44,7 +42,7 @@ jobs:
       - name: 上传结果
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.JM_ALBUM_ID }}.zip
+          name: ${{ env.JM_ALBUM_ID }}
           path: ./result/pdf
           if-no-files-found: error
           retention-days: 90
