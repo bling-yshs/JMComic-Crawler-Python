@@ -14,7 +14,7 @@ def find_image_directories(base_dir):
     """
     image_dirs = []
     for root, dirs, files in os.walk(base_dir):
-        if any(file.lower().endswith('.jpg') for file in files):
+        if any(file.lower().endswith(('.jpg', '.webp')) for file in files):
             image_dirs.append(root)
     return image_dirs
 
@@ -26,11 +26,13 @@ def convert_images_to_pdf(image_dir, output_pdf):
         image_dir: 包含图片的目录路径
         output_pdf: 输出PDF文件的路径
     """
-    # 获取所有图片文件并按名称排序
-    image_files = sorted(glob.glob(os.path.join(image_dir, "*.[jJ][pP][gG]")))
+    # 获取所有图片文件并按名称排序（支持jpg和webp）
+    jpg_files = glob.glob(os.path.join(image_dir, "*.[jJ][pP][gG]"))
+    webp_files = glob.glob(os.path.join(image_dir, "*.[wW][eE][bB][pP]"))
+    image_files = sorted(jpg_files + webp_files)
     
     if not image_files:
-        print(f"在 {image_dir} 中没有找到jpg图片文件")
+        print(f"在 {image_dir} 中没有找到jpg或webp图片文件")
         return False
     
     # 打开第一张图片
@@ -69,11 +71,12 @@ def process_all_manga(base_dir):
     image_dirs = find_image_directories(base_dir)
     
     if not image_dirs:
-        print(f"在 {base_dir} 中没有找到包含jpg图片的目录")
+        print(f"在 {base_dir} 中没有找到包含jpg或webp图片的目录")
         return
     
     print(f"找到 {len(image_dirs)} 个包含图片的目录")
     
+    success_count = 0
     # 处理每个目录
     for image_dir in image_dirs:
         # 获取父目录名作为漫画名
@@ -85,8 +88,11 @@ def process_all_manga(base_dir):
         print(f"\n开始处理漫画: {manga_name}")
         if convert_images_to_pdf(image_dir, output_pdf):
             print(f"成功将 {manga_name} 转换为PDF")
+            success_count += 1
         else:
             print(f"转换 {manga_name} 失败")
+    
+    return success_count > 0
 
 if __name__ == "__main__":
     # 设置基础目录
