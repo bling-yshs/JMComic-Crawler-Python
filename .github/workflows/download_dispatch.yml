@@ -41,7 +41,6 @@ jobs:
 
       - name: 下载 gs
         run: |
-          sudo apt update
           sudo apt install ghostscript
 
       - name: 压缩 pdf
