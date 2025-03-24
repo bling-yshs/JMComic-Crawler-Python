@@ -31,12 +31,6 @@ on:
         default: ''
         required: false
 
-      ZIP_NAME:
-        type: string
-        default: 本子.pdf
-        description: PDF文件名称
-        required: false
-
       UPLOAD_NAME:
         type: string
         default: Click me to download PDF
@@ -65,7 +59,6 @@ jobs:
       JM_PHOTO_IDS: ${{ github.event.inputs.JM_PHOTO_IDS }}
       DIR_RULE: ${{ github.event.inputs.DIR_RULE }}
       CLIENT_IMPL: ${{ github.event.inputs.CLIENT_IMPL }}
-      ZIP_NAME: ${{ github.event.inputs.ZIP_NAME }}
       UPLOAD_NAME: ${{ github.event.inputs.UPLOAD_NAME }}
       IMAGE_SUFFIX: ${{ github.event.inputs.IMAGE_SUFFIX }}
 
@@ -114,13 +107,13 @@ jobs:
         run: |
           python merge_to_pdf.py
           # 移动生成的PDF到指定位置和名称（如果存在的话）
-          find ${{ env.JM_DOWNLOAD_DIR }} -name "*.pdf" -exec mv {} ${{ env.JM_DOWNLOAD_DIR }}/${{ env.ZIP_NAME }} \;
+          find ${{ env.JM_DOWNLOAD_DIR }} -name "*.pdf" -exec mv {} ${{ env.JM_DOWNLOAD_DIR }}/${{ env.JM_ALBUM_IDS }}.pdf \;
 
       - name: 上传结果
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.UPLOAD_NAME }}
-          path: ${{ env.JM_DOWNLOAD_DIR }}/${{ env.ZIP_NAME }}
+          path: ${{ env.JM_DOWNLOAD_DIR }}/${{ env.JM_ALBUM_IDS }}.pdf
           if-no-files-found: error
           retention-days: 90
 
