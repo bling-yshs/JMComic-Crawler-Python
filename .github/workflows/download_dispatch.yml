@@ -18,8 +18,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       # 工作流输入
-      JM_ALBUM_IDS: ${{ github.event.inputs.JM_ALBUM_IDS }}
-      JM_PHOTO_IDS: ${{ github.event.inputs.JM_PHOTO_IDS }}
+      JM_ALBUM_ID: ${{ github.event.inputs.JM_ALBUM_ID }}
+      JM_PHOTO_ID: ${{ github.event.inputs.JM_PHOTO_ID }}
 
     steps:
       - uses: actions/checkout@v4
@@ -39,12 +39,12 @@ jobs:
           pip install jmcomic -i https://pypi.org/project --upgrade
 
       - name: 运行下载脚本
-        run: jmcomic ${{ env.JM_ALBUM_IDS }} p${{ env.JM_PHOTO_IDS }} --option="./option.yml"
+        run: jmcomic ${{ env.JM_ALBUM_ID }} p${{ env.JM_PHOTO_ID }} --option="./option.yml"
 
       - name: 上传结果
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ env.JM_ALBUM_IDS }}.zip
+          name: ${{ env.JM_ALBUM_ID }}.zip
           path: ./result/pdf
           if-no-files-found: error
           retention-days: 90
