@@ -14,7 +14,7 @@ def find_image_directories(base_dir):
     """
     image_dirs = []
     for root, dirs, files in os.walk(base_dir):
-        if any(file.lower().endswith(('.jpg', '.webp')) for file in files):
+        if any(file.endswith('.jpg') for file in files):
             image_dirs.append(root)
     return image_dirs
 
@@ -46,13 +46,12 @@ def convert_images_to_pdf(image_dir, output_pdf):
         image_dir: 包含图片的目录路径
         output_pdf: 输出PDF文件的路径
     """
-    # 获取所有图片文件并按名称排序（支持jpg和webp）
-    jpg_files = glob.glob(os.path.join(image_dir, "*.[jJ][pP][gG]"))
-    webp_files = glob.glob(os.path.join(image_dir, "*.[wW][eE][bB][pP]"))
-    image_files = sorted(jpg_files + webp_files)
+    # 获取所有图片文件并按名称排序
+    image_files = sorted(glob.glob("*.jpg", root_dir=image_dir))
+    image_files = [os.path.join(image_dir, f) for f in image_files]
     
     if not image_files:
-        print(f"在 {image_dir} 中没有找到jpg或webp图片文件")
+        print(f"在 {image_dir} 中没有找到jpg图片文件")
         return False
     
     # 打开第一张图片
