@@ -23,6 +23,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        
+      - name: 检查文件是否已存在
+        run: |
+          if [ -f "./resources/${JM_ALBUM_ID}.pdf" ]; then
+            echo "文件 ${JM_ALBUM_ID}.pdf 已存在，跳过下载"
+            exit 0
+          fi
+
       - name: Set up Python 3.11
         uses: actions/setup-python@v5
         with:
