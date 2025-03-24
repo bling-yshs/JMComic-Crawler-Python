@@ -26,8 +26,8 @@ jobs:
         
       - name: 检查文件是否已存在
         run: |
-          if [ -f "./resources/${JM_ALBUM_ID}.pdf" ]; then
-            echo "文件 ${JM_ALBUM_ID}.pdf 已存在，跳过下载"
+          if [ -f "./resources/${JM_ALBUM_ID}.zip" ]; then
+            echo "文件 ${JM_ALBUM_ID}.zip 已存在，跳过下载"
             exit 0
           fi
 
@@ -47,15 +47,22 @@ jobs:
       - name: 运行下载脚本
         run: jmcomic ${{ env.JM_ALBUM_ID }} p${{ env.JM_PHOTO_ID }} --option="./option.yml"
 
-      - name: 下载 gs
+      - name: 下载依赖
         run: |
           sudo apt install ghostscript
+          sudo apt-get install -y zip
 
       - name: 压缩 pdf
         run: |
           mkdir -p ./resources
           gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/screen -dNOPAUSE -dQUIET -dBATCH -sOutputFile="./result/pdf/${JM_ALBUM_ID}_compressed.pdf" "./result/pdf/${JM_ALBUM_ID}.pdf"
           cp "./result/pdf/${JM_ALBUM_ID}_compressed.pdf" "./resources/${JM_ALBUM_ID}.pdf"
+
+      - name: 创建加密 ZIP 文件
+        working-directory: ./resources
+        run: |
+          zip -P ${JM_ALBUM_ID} "${JM_ALBUM_ID}.zip" "${JM_ALBUM_ID}.pdf"
+          rm "${JM_ALBUM_ID}.pdf"
 
       - name: 上传到 Github，这里要用 Github Actions Bot 的信息
         run: |
