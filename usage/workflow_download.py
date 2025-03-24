@@ -31,6 +31,11 @@ def env(name, default, trim=('[]', '""', "''")):
 
 def get_id_set(env_name, given):
     aid_set = set()
+    
+    # 如果是 JM_PHOTO_IDS 且没有传值，则返回默认值 {'1'}
+    if env_name == 'JM_PHOTO_IDS' and not given and not env(env_name, ''):
+        return {'1'}
+        
     for text in [
         given,
         (env(env_name, '')).replace('-', '\n'),
