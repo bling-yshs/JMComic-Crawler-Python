@@ -8,18 +8,12 @@ on:
         description: 本子id（多个id用-隔开，如 '123-456-789'）
         required: true
 
-      JM_PHOTO_ID:
-        type: string
-        description: 章节id（单独下载章节，多个id同上）
-        required: true
-
 jobs:
   download:
     runs-on: ubuntu-latest
     env:
       # 工作流输入
       JM_ALBUM_ID: ${{ github.event.inputs.JM_ALBUM_ID }}
-      JM_PHOTO_ID: ${{ github.event.inputs.JM_PHOTO_ID }}
 
     steps:
       - uses: actions/checkout@v4
@@ -52,7 +46,7 @@ jobs:
 
       - name: 运行下载脚本
         if: steps.check_file.outputs.skip != 'true'
-        run: jmcomic ${{ env.JM_ALBUM_ID }} p${{ env.JM_PHOTO_ID }} --option="./option.yml"
+        run: jmcomic ${{ env.JM_ALBUM_ID }} --option="./option.yml"
 
       - name: 下载依赖
         if: steps.check_file.outputs.skip != 'true'

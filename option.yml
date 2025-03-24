@@ -1,5 +1,7 @@
 # 插件配置
 plugins:
+  after_init:
+    - plugin: find_update # 只下载新章插件
   after_photo:
   - plugin: img2pdf
     kwargs:
