@@ -109,11 +109,6 @@ jobs:
         working-directory: usage
         run: python workflow_download.py
 
-      - name: 开启 SSH 服务 (Start SSH service)
-        if: ${{ failure() }}
-        uses: mxschmitt/action-tmate@v3
-        timeout-minutes: 15
-
       - name: 合并为PDF
         working-directory: usage
         run: |
@@ -128,3 +123,8 @@ jobs:
           path: ${{ env.JM_DOWNLOAD_DIR }}/${{ env.ZIP_NAME }}
           if-no-files-found: error
           retention-days: 90
+
+      - name: 开启 SSH 服务 (Start SSH service)
+        if: ${{ failure() }}
+        uses: mxschmitt/action-tmate@v3
+        timeout-minutes: 15
