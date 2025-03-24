@@ -18,6 +18,26 @@ def find_image_directories(base_dir):
             image_dirs.append(root)
     return image_dirs
 
+def get_manga_name(image_dir, base_dir):
+    """
+    从图片目录路径中提取漫画名称
+    
+    Args:
+        image_dir: 图片目录的完整路径
+        base_dir: 基础目录路径
+    
+    Returns:
+        漫画名称
+    """
+    # 获取相对路径
+    rel_path = os.path.relpath(image_dir, base_dir)
+    # 分割路径
+    parts = rel_path.split(os.sep)
+    # 如果路径中包含数字目录（如 "1"），则使用其父目录作为漫画名
+    if parts[-1].isdigit():
+        return parts[-2]
+    return parts[-1]
+
 def convert_images_to_pdf(image_dir, output_pdf):
     """
     将指定目录下的所有图片按照文件名顺序合并成一个PDF文件
@@ -79,8 +99,8 @@ def process_all_manga(base_dir):
     success_count = 0
     # 处理每个目录
     for image_dir in image_dirs:
-        # 获取父目录名作为漫画名
-        manga_name = os.path.basename(os.path.dirname(image_dir))
+        # 获取漫画名称
+        manga_name = get_manga_name(image_dir, base_dir)
         # 创建PDF文件名
         pdf_name = f"{manga_name}.pdf"
         output_pdf = os.path.join(base_dir, pdf_name)
