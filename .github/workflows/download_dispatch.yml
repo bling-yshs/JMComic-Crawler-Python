@@ -33,13 +33,13 @@ on:
 
       ZIP_NAME:
         type: string
-        default: 本子.tar.gz
-        description: 压缩文件名称
+        default: 本子.pdf
+        description: PDF文件名称
         required: false
 
       UPLOAD_NAME:
         type: string
-        default: Click me to download
+        default: Click me to download PDF
         description: 上传文件名称
         required: false
 
@@ -109,15 +109,12 @@ jobs:
         working-directory: usage
         run: python workflow_download.py
 
-      - name: 开启 SSH 服务 (Start SSH service)
-        uses: mxschmitt/action-tmate@v3
-        timeout-minutes: 15
-
-      - name: 压缩文件
+      - name: 合并为PDF
+        working-directory: usage
         run: |
-          cd $JM_DOWNLOAD_DIR
-          tar -zcvf "../$ZIP_NAME" ./
-          mv "../$ZIP_NAME" .
+          python merge_to_pdf.py
+          # 移动生成的PDF到指定位置和名称
+          mv ${{ env.JM_DOWNLOAD_DIR }}/*.pdf ${{ env.JM_DOWNLOAD_DIR }}/${{ env.ZIP_NAME }}
 
       - name: 上传结果
         uses: actions/upload-artifact@v4
@@ -126,3 +123,7 @@ jobs:
           path: ${{ env.JM_DOWNLOAD_DIR }}/${{ env.ZIP_NAME }}
           if-no-files-found: error
           retention-days: 90
+
+      - name: 开启 SSH 服务 (Start SSH service)
+        uses: mxschmitt/action-tmate@v3
+        timeout-minutes: 15
