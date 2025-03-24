@@ -25,46 +25,57 @@ jobs:
       - uses: actions/checkout@v4
         
       - name: 检查文件是否已存在
+        id: check_file
         run: |
           if [ -f "./resources/${JM_ALBUM_ID}.zip" ]; then
             echo "文件 ${JM_ALBUM_ID}.zip 已存在，跳过下载"
-            exit 0
+            echo "skip=true" >> $GITHUB_OUTPUT
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
           fi
 
       - name: Set up Python 3.11
+        if: steps.check_file.outputs.skip != 'true'
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
       - name: Install Dependency
+        if: steps.check_file.outputs.skip != 'true'
         run: |
           pip install -r requirements-dev.txt
 
       - name: 安装jmcomic（pip）
+        if: steps.check_file.outputs.skip != 'true'
         run: |
           pip install jmcomic -i https://pypi.org/project --upgrade
 
       - name: 运行下载脚本
+        if: steps.check_file.outputs.skip != 'true'
         run: jmcomic ${{ env.JM_ALBUM_ID }} p${{ env.JM_PHOTO_ID }} --option="./option.yml"
 
       - name: 下载依赖
+        if: steps.check_file.outputs.skip != 'true'
         run: |
           sudo apt install ghostscript
           sudo apt-get install -y zip
 
       - name: 压缩 pdf
+        if: steps.check_file.outputs.skip != 'true'
         run: |
           mkdir -p ./resources
           gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/screen -dNOPAUSE -dQUIET -dBATCH -sOutputFile="./result/pdf/${JM_ALBUM_ID}_compressed.pdf" "./result/pdf/${JM_ALBUM_ID}.pdf"
           cp "./result/pdf/${JM_ALBUM_ID}_compressed.pdf" "./resources/${JM_ALBUM_ID}.pdf"
 
       - name: 创建加密 ZIP 文件
+        if: steps.check_file.outputs.skip != 'true'
         working-directory: ./resources
         run: |
           zip -P ${JM_ALBUM_ID} "${JM_ALBUM_ID}.zip" "${JM_ALBUM_ID}.pdf"
           rm "${JM_ALBUM_ID}.pdf"
 
       - name: 上传到 Github，这里要用 Github Actions Bot 的信息
+        if: steps.check_file.outputs.skip != 'true'
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@users.noreply.github.com"
