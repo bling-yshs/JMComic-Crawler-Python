@@ -1,6 +1,8 @@
 # this repo
 /assets/download/
 
+/result
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
