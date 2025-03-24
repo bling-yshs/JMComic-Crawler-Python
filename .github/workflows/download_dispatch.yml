@@ -30,7 +30,8 @@ jobs:
 
       - name: Install Dependency
         run: |
-          pip install img2pdf
+          python -m pip install --upgrade pip
+          pip install -r requirements-dev.txt
 
       - name: 安装jmcomic（pip）
         run: |
