@@ -1,0 +1,10 @@
+# 插件配置
+plugins:
+  after_photo:
+  - plugin: img2pdf
+    kwargs:
+      pdf_dir: ./result/pdf/
+      filename_rule: Pid
+dir_rule:
+  base_dir: ./result/down/
+  rule: Bd_Pid
