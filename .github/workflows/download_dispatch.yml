@@ -54,11 +54,19 @@ jobs:
           sudo apt install ghostscript
           sudo apt-get install -y zip
 
-      - name: 加密 PDF 文件
+      - name: 压缩 pdf
         if: steps.check_file.outputs.skip != 'true'
         run: |
           mkdir -p ./resources
-          gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/screen -dNOPAUSE -dQUIET -dBATCH -sOutputFile="./resources/${JM_ALBUM_ID}.pdf" -sOwnerPassword=${JM_ALBUM_ID} -sUserPassword=${JM_ALBUM_ID} "./result/pdf/${JM_ALBUM_ID}.pdf"
+          gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/screen -dNOPAUSE -dQUIET -dBATCH -sOutputFile="./result/pdf/${JM_ALBUM_ID}_compressed.pdf" "./result/pdf/${JM_ALBUM_ID}.pdf"
+          cp "./result/pdf/${JM_ALBUM_ID}_compressed.pdf" "./resources/${JM_ALBUM_ID}.pdf"
+
+      - name: 创建加密 ZIP 文件
+        if: steps.check_file.outputs.skip != 'true'
+        working-directory: ./resources
+        run: |
+          zip -P ${JM_ALBUM_ID} "${JM_ALBUM_ID}.zip" "${JM_ALBUM_ID}.pdf"
+          rm "${JM_ALBUM_ID}.pdf"
 
       - name: 上传到 Github，这里要用 Github Actions Bot 的信息
         if: steps.check_file.outputs.skip != 'true'
