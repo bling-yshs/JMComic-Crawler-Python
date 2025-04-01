@@ -51,6 +51,7 @@ jobs:
       - name: 下载依赖
         if: steps.check_file.outputs.skip != 'true'
         run: |
+          sudo apt update
           sudo apt install ghostscript
           sudo apt-get install -y zip
 
