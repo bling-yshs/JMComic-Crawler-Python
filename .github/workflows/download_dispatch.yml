@@ -48,12 +48,12 @@ jobs:
         if: steps.check_file.outputs.skip != 'true'
         run: jmcomic p${{ env.JM_ALBUM_ID }} --option="./option.yml"
 
-      - name: 下载依赖
+      - name: 缓存 apt 依赖
         if: steps.check_file.outputs.skip != 'true'
-        run: |
-          sudo apt update
-          sudo apt install ghostscript
-          sudo apt-get install -y zip
+        uses: awalsh128/cache-apt-pkgs-action@v1
+        with:
+          packages: ghostscript zip
+          version: 1.0
 
       - name: 压缩 pdf
         if: steps.check_file.outputs.skip != 'true'
