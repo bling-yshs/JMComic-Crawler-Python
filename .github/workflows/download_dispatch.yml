@@ -72,6 +72,7 @@ jobs:
       - name: 上传到 Github，这里要用 Github Actions Bot 的信息
         if: steps.check_file.outputs.skip != 'true'
         run: |
+          git pull
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@users.noreply.github.com"
           git add .
