@@ -46,7 +46,15 @@ jobs:
 
       - name: 运行下载脚本
         if: steps.check_file.outputs.skip != 'true'
-        run: jmcomic p${{ env.JM_ALBUM_ID }} --option="./option.yml"
+        run: |
+          set -euo pipefail        # bash 遇到非零立即退出，管道错误也能冒泡
+          jmcomic p${{ env.JM_ALBUM_ID }} --option ./option.yml 2>&1 | tee jm.log
+
+          # 如果日志里出现典型异常关键字，则主动返回非零
+          if grep -E 'MissingAlbumPhotoException|JmDownloader Exit with exception' jm.log; then
+            echo "::error ::jmcomic 发生异常，下载失败"
+            exit 1
+          fi          
 
       - name: 缓存 apt 依赖
         if: steps.check_file.outputs.skip != 'true'
