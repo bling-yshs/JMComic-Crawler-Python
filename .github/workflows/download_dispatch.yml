@@ -86,8 +86,3 @@ jobs:
           git add .
           git commit -m "update"
           git push
-
-      - name: 开启 SSH 服务 (Start SSH service)
-        if: ${{ failure() }}
-        uses: mxschmitt/action-tmate@v3
-        timeout-minutes: 3
